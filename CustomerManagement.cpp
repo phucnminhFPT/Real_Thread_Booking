@@ -4,16 +4,13 @@
 using namespace std;
 
 // Constructor
-CustomerManagement::CustomerManagement()
-{
+CustomerManagement::CustomerManagement() {
 }
 
 // 6. Create a new customer
-void CustomerManagement::createAccount(string phoneNumber, string name)
-{
+void CustomerManagement::createAccount(string phoneNumber, string name) {
 	// Check if phone number already exists
-	if (_customers.find(phoneNumber) != _customers.end())
-	{
+	if (_customers.find(phoneNumber) != _customers.end()) {
 		cout << phoneNumber << " already exists ! Return main menu\n";
 		return;
 	}
@@ -34,13 +31,11 @@ void CustomerManagement::createAccount(string phoneNumber, string name)
 }
 
 // Function Helper : Find customer by phone number
-Customer *CustomerManagement::findCustomerByPhoneNumber(string phoneNumber)
-{
+Customer *CustomerManagement::findCustomerByPhoneNumber(string phoneNumber) {
 	auto it = _customers.find(phoneNumber);
 
 	// Customer not found
-	if (it == _customers.end())
-	{
+	if (it == _customers.end()) {
 		return nullptr;
 	}
 
@@ -49,12 +44,10 @@ Customer *CustomerManagement::findCustomerByPhoneNumber(string phoneNumber)
 }
 
 // Display one customer
-void CustomerManagement::displayCustomer(string phoneNumber)
-{
+void CustomerManagement::displayCustomer(string phoneNumber) {
 	Customer *customer = findCustomerByPhoneNumber(phoneNumber);
 
-	if (customer == nullptr)
-	{
+	if (customer == nullptr) {
 		cout << "Customer not found!" << endl;
 		return;
 	}
@@ -67,8 +60,7 @@ void CustomerManagement::displayCustomer(string phoneNumber)
 
 //------------- 8. Show Account Balance --------------//
 
-void CustomerManagement::showAccountBalance(Customer *customer)
-{
+void CustomerManagement::showAccountBalance(Customer *customer) {
 	float money = customer->getAccountBalance();
 
 	cout << "Your current account : " << money;
@@ -76,10 +68,8 @@ void CustomerManagement::showAccountBalance(Customer *customer)
 
 //------------------ 9. Deposit Money -------------//
 
-void CustomerManagement::depositMoney(float money, Customer *customer)
-{
-	if (money < 0)
-	{
+void CustomerManagement::depositMoney(float money, Customer *customer) {
+	if (money < 0) {
 		cout << "Can't deposit negative monney\n";
 		return;
 	}
@@ -89,4 +79,23 @@ void CustomerManagement::depositMoney(float money, Customer *customer)
 
 	Customer *b = customer;
 	showAccountBalance(b);
+}
+
+
+// -------------------------- Load file --------------------
+// Get all customers
+unordered_map<string, Customer> &CustomerManagement::getCustomers() {
+	return _customers;
+}
+
+// Load customer from file
+// This function does NOT display any message
+void CustomerManagement::loadCustomer( string phoneNumber, string name, float balance) {
+	Customer customer;
+
+	customer.setPhoneNumber(phoneNumber);
+	customer.setNameCustomer(name);
+	customer.setAccountBalance(balance);
+
+	_customers[phoneNumber] = customer;
 }

@@ -4,23 +4,26 @@
 #include <unordered_map>
 
 using namespace std;
-class CustomerManagement
-{
-private:
-	unordered_map<string, Customer> _customers;
+class CustomerManagement {
+	private:
+		unordered_map<string, Customer> _customers;
 
-public:
-	// Construct
-	CustomerManagement();
+	public:
+		// Construct
+		CustomerManagement();
 
-	// Method
-	void createAccount(string phoneNumber, string name);
-	void displayCustomer(string phoneNumber);
-	void depositMoney(float money, Customer *customer); // Deposit monney from customer, Don't allow enter monney < 0
-	void showAccountBalance(Customer *customer);
+		// Method
+		void createAccount(string phoneNumber, string name);
+		void displayCustomer(string phoneNumber);
+		void depositMoney(float money, Customer *customer); // Deposit monney from customer, Don't allow enter monney < 0
+		void showAccountBalance(Customer *customer);
+		// function helper
+		Customer *findCustomerByPhoneNumber(string phoneNumber);
+		
+		// File Manager
+		unordered_map<string, Customer> &getCustomers();
 
-	// function helper
-	Customer *findCustomerByPhoneNumber(string phoneNumber);
+		void loadCustomer(string phoneNumber, string name,float balance );
 };
 
 #endif

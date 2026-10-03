@@ -4,38 +4,30 @@
 
 using namespace std;
 
-SeatManagement::SeatManagement()
-{
+SeatManagement::SeatManagement() {
 	headWaitList = tailWaitList = nullptr;
 	initSeatsMap_HashMap();
 }
 
-void SeatManagement::initSeatsMap_HashMap()
-{
-	for (char row = 'A'; row <= 'E'; row++)
-	{
-		for (int i = 1; i <= 6; i++)
-		{
+void SeatManagement::initSeatsMap_HashMap() {
+	for (char row = 'A'; row <= 'E'; row++) {
+		for (int i = 1; i <= 6; i++) {
 			string seatID = row + to_string(i);
 			string seatClass = "";
 			char status = 'A'; // A: Avaible
 			float seatPrice = 0.0;
 			// A, B : Normal Seat
 			// Price = 100
-			if (row == 'A' || row == 'B')
-			{
+			if (row == 'A' || row == 'B') {
 				seatClass = "Normal";
 				seatPrice = 100;
 			}
 			// C, D : VIP Seat
 			// Price = 200
-			else if (row == 'C' || row == 'D')
-			{
+			else if (row == 'C' || row == 'D') {
 				seatClass = "VIP";
 				seatPrice = 200;
-			}
-			else
-			{
+			} else {
 				seatClass = "Couple";
 				seatPrice = 250;
 			}
@@ -46,16 +38,13 @@ void SeatManagement::initSeatsMap_HashMap()
 	}
 }
 
-void SeatManagement::displaySeatMap()
-{
+void SeatManagement::displaySeatMap() {
 	cout << "\n------------SEAT MAP----------- \n\n";
 
-	for (char row = 'A'; row <= 'E'; row++)
-	{
+	for (char row = 'A'; row <= 'E'; row++) {
 		cout << "  ";
 
-		for (int number = 1; number <= 6; number++)
-		{
+		for (int number = 1; number <= 6; number++) {
 			string seatID = string(1, row) + to_string(number);
 
 			Seat &seat = _seatMap.at(seatID);
@@ -78,29 +67,25 @@ void SeatManagement::displaySeatMap()
 }
 
 // -----------------1. Order seat-------------------
-void SeatManagement::orderSeat(string seatID, Customer *customer)
-{
+void SeatManagement::orderSeat(string seatID, Customer *customer) {
 	// Find seat
 	auto it = _seatMap.find(seatID);
 
 	// 1. Seat does not exist
-	if (it == _seatMap.end())
-	{
+	if (it == _seatMap.end()) {
 		cout << seatID << " not existing !";
 		return;
 	}
 
 	Seat &seat = it->second; // Get value
 	// 2.1 If P : Pending
-	if (seat.getStatus() == 'P')
-	{
+	if (seat.getStatus() == 'P') {
 		cout << "This seat is PENDING !";
 		return;
 	}
 
 	// 2.2 If O : Ordered
-	if (seat.getStatus() == 'O')
-	{
+	if (seat.getStatus() == 'O') {
 		cout << "This seat was ORDERED !";
 		return;
 	}
@@ -114,128 +99,136 @@ void SeatManagement::orderSeat(string seatID, Customer *customer)
 	seat.setPhoneNumber(customer->getPhoneNumber());
 	seat.setStatus('P');
 }
+//------------- Delete Node ------------------//
 
-// ------------------*2. Function Support for cancelSeat --------------------
-void SeatManagement::displayCustomerSeats(string phoneNumber)
-{
-	bool found = false;
-
-	cout << "\n========== YOUR SEATS ==========\n";
-
-	for (auto &pair : _seatMap)
-	{
-		Seat &seat = pair.second;
-
-		if (seat.getPhoneNumber() == phoneNumber &&
-			(seat.getStatus() == 'P' || seat.getStatus() == 'O'))
-		{
-			cout << "Seat ID : " << seat.getSeatID()
-				 << " | Class : " << seat.getSeatClass()
-				 << " | Price : " << seat.getSeatPrice()
-				 << " | Status : " << seat.getStatus()
-				 << endl;
-
-			found = true;
-		}
-	}
-
-	if (!found)
-	{
-		cout << "You don't have any seat to cancel.\n";
-	}
-
-	cout << "================================\n";
-}
-
-// --------------------------2. Cancel seat ---------------------
-void SeatManagement::cancelSeat(string seatID, Customer *customer)
-{
-	// 1. Find seat
-	auto it = _seatMap.find(seatID);
-
-	if (it == _seatMap.end())
-	{
-		cout << "Seat " << seatID << " does not exist!\n";
-		return;
-	}
-
-	Seat &seat = it->second;
-
-	// 2. Check if this seat belongs to this customer
-	if (seat.getPhoneNumber() != customer->getPhoneNumber())
-	{
-		cout << "This seat does not belong to you!\n";
-		return;
-	}
-
-	// 3. Check if seat is Pending
-	if (seat.getStatus() != 'P')
-	{
-		cout << "This seat is not Pending!\n";
-		return;
-	}
-
-	// 4. Delete corresponding node from Pending List
-	Node *cur = headWaitList;
+void SeatManagement::deleteNode(string seatID, string phoneNumber) {
 	Node *prev = nullptr;
+	Node *cur = headWaitList;
 
-	while (cur != nullptr)
-	{
-		if (cur->seatID == seatID && cur->customer.getPhoneNumber() == customer->getPhoneNumber())
-		{
-			// Case 1: Delete first node
-			if (prev == nullptr)
-			{
+	while (cur != nullptr) {
+		if (cur->seatID == seatID && cur->customer.getPhoneNumber() == phoneNumber) {
+			// Delete HEAD
+			if (cur == headWaitList) {
 				headWaitList = cur->next;
-			}
-			// Case 2: Delete middle or last node
-			else
-			{
-				prev->next = cur->next;
-			}
 
-			// If deleting tail node
-			if (cur == tailWaitList)
-			{
-				tailWaitList = prev;
+				// List becomes empty
+				if (headWaitList == nullptr) {
+					tailWaitList = nullptr;
+				}
+			} else {
+				// Delete MIDDLE or TAIL
+				prev->next = cur->next;
+
+				// Delete TAIL
+				if (cur == tailWaitList) {
+					tailWaitList = prev;
+				}
 			}
 
 			delete cur;
-
-			// If list becomes empty
-			if (headWaitList == nullptr)
-			{
-				tailWaitList = nullptr;
-			}
-
-			break;
+			return;
 		}
 
 		prev = cur;
 		cur = cur->next;
 	}
+}
+// --------------------------2. Cancel seat ---------------------
+void SeatManagement::cancelSeat(Customer *customer) {
+	vector<string> listSeatPending;
+	string phoneNumber = customer->getPhoneNumber();
 
-	// 5. Change seat from Pending -> Available
-	seat.setStatus('A');
+	// 1. Find all pending seats of this customer
+	Node *cur = headWaitList;
 
-	// 6. Remove customer phone number from seat
-	seat.setPhoneNumber("");
+	while (cur != nullptr) {
+		if (cur->customer.getPhoneNumber() == phoneNumber) {
+			listSeatPending.push_back(cur->seatID);
+		}
 
-	cout << "Cancel Pending Seat successfully!\n";
-	cout << "Seat " << seatID << " is now AVAILABLE.\n";
+		cur = cur->next;
+	}
+
+	// 2. No pending seat
+	if (listSeatPending.empty()) {
+		cout << "\nYou have no pending seats to cancel!\n";
+		return;
+	}
+
+	// 3. Display customer's pending seats
+	cout << "\n========== YOUR PENDING SEATS ==========\n";
+
+	for (int i = 0; i < listSeatPending.size(); i++) {
+		string seatID = listSeatPending[i];
+
+		auto it = _seatMap.find(seatID);
+
+		if (it != _seatMap.end()) {
+			Seat &seat = it->second;
+
+			cout << "[" << i + 1 << "] "
+			     << seat.getSeatID()
+			     << " | " << seat.getSeatClass()
+			     << " | Price: " << seat.getSeatPrice()
+			     << endl;
+		}
+	}
+
+	cout << "0. Cancel operation\n";
+	cout << "========================================\n";
+
+	// 4. Enter ticket numbers
+	cout << "Enter ticket numbers to cancel (example: 1 2 3): ";
+
+	vector<int> userChoice;
+	int choice;
+
+	while (cin >> choice) {
+		if (choice == 0) {
+			cout << "Cancel operation stopped.\n";
+			return;
+		}
+
+		if (choice >= 1 && choice <= listSeatPending.size()) {
+			userChoice.push_back(choice);
+		} else {
+			cout << "Invalid ticket number: " << choice << endl;
+		}
+
+		// Stop input when user presses Enter
+		if (cin.peek() == '\n') {
+			break;
+		}
+	}
+
+	// 5. Cancel selected seats
+	for (int i = 0; i < userChoice.size(); i++) {
+		string seatID = listSeatPending[userChoice[i] - 1];
+
+		auto it = _seatMap.find(seatID);
+
+		if (it != _seatMap.end()) {
+			Seat &seat = it->second;
+
+			// P -> A
+			seat.setStatus('A');
+			seat.setPhoneNumber("");
+
+			// Remove from linked list
+			deleteNode(seatID, phoneNumber);
+
+			cout << seatID << " cancelled successfully!\n";
+		}
+	}
 }
 
-void SeatManagement::addToPendingList(string seatID, Customer *customer)
-{
+void SeatManagement::addToPendingList(string seatID, Customer *customer) {
 	Node *newNode = new Node(*customer, seatID);
 
-	if (headWaitList == nullptr)
-	{
+	if (headWaitList == nullptr) {
 		headWaitList = newNode;
 		tailWaitList = newNode;
-	}
-	else
-	{
+	} else {
 		tailWaitList->next = newNode;
 		tailWaitList = newNode;
 	}
@@ -243,10 +236,8 @@ void SeatManagement::addToPendingList(string seatID, Customer *customer)
 
 // ------------------------3. Display Awaiting Payment List (Linked List) -----------
 
-void SeatManagement::displayAllPendingList()
-{
-	if (headWaitList == nullptr)
-	{
+void SeatManagement::displayAllPendingList() {
+	if (headWaitList == nullptr) {
 		cout << "\n========== AWAITING PAYMENT LIST ==========\n";
 		cout << "No customer is waiting for payment.\n";
 		return;
@@ -258,8 +249,7 @@ void SeatManagement::displayAllPendingList()
 
 	int count = 1;
 
-	while (cur != nullptr)
-	{
+	while (cur != nullptr) {
 		cout << "\n[" << count << "]\n";
 		cout << "Phone Number : " << cur->customer.getPhoneNumber() << endl;
 		cout << "Customer Name: " << cur->customer.getNameCustomer() << endl;
@@ -268,8 +258,7 @@ void SeatManagement::displayAllPendingList()
 
 		auto it = _seatMap.find(cur->seatID);
 
-		if (it != _seatMap.end())
-		{
+		if (it != _seatMap.end()) {
 			Seat &seat = it->second;
 
 			cout << "Seat Class   : " << seat.getSeatClass() << endl;
@@ -285,22 +274,123 @@ void SeatManagement::displayAllPendingList()
 }
 
 // --------------------------- 4. Payment Confirmation -----------------------------
-void SeatManagement::paymentTicketConfirm(Customer *customer)
-{
+void SeatManagement::paymentTicketConfirm(Customer *customer) {
 	vector<string> listSeatPending;
 
 	string phoneNumber = customer->getPhoneNumber();
 
 	Node *cur = headWaitList;
 
-	while (cur != nullptr)
-	{
-		if (cur->customer.getPhoneNumber() == phoneNumber)
-		{
-
-			auto it = _seatMap.find();
+	// 1. Find all pending seats of customer
+	while (cur != nullptr) {
+		if (cur->customer.getPhoneNumber() == phoneNumber) {
 			listSeatPending.push_back(cur->seatID);
 		}
+
 		cur = cur->next;
 	}
+
+	// 2. No pending seat
+	if (listSeatPending.empty()) {
+		cout << "\nYou have no pending tickets!\n";
+		return;
+	}
+
+	// 3. Display pending tickets
+	cout << "\n========== YOUR PENDING TICKETS ==========\n";
+
+	for (int i = 0; i < listSeatPending.size(); i++) {
+		string seatID = listSeatPending[i];
+
+		auto it = _seatMap.find(seatID);
+
+		if (it != _seatMap.end()) {
+			Seat &seat = it->second;
+
+			cout << "[" << i + 1 << "] "
+			     << seat.getSeatID()
+			     << " | " << seat.getSeatClass()
+			     << " | Price: " << seat.getSeatPrice()
+			     << endl;
+		}
+	}
+
+	cout << "0. Cancel operation\n";
+	cout << "===========================================\n";
+
+	// 4. Enter ticket numbers
+	cout << "Enter ticket numbers to confirm (example: 1 2 3): ";
+
+	vector<int> choices;
+	int choice;
+
+	while (cin >> choice) {
+		if (choice == 0) {
+			cout << "Payment operation stopped.\n";
+			return;
+		}
+
+		if (choice >= 1 && choice <= listSeatPending.size()) {
+			choices.push_back(choice);
+		} else {
+			cout << "Invalid ticket number: " << choice << endl;
+		}
+
+		if (cin.peek() == '\n') {
+			break;
+		}
+	}
+
+	// 5. Calculate total money
+	float totalMoney = 0.0;
+
+	for (int i = 0; i < choices.size(); i++) {
+		string seatID = listSeatPending[choices[i] - 1];
+
+		auto it = _seatMap.find(seatID);
+
+		if (it != _seatMap.end()) {
+			totalMoney += it->second.getSeatPrice();
+		}
+	}
+
+	cout << "\nTotal payment: " << totalMoney << endl;
+
+	// 6.
+	float customerBalance = customer->getAccountBalance();
+
+	if (customerBalance < totalMoney) {
+		cout << "Your current balance not enought money !\n";
+		return;
+	}
+	// 7. Payment successful
+	cout << "\nPayment successful!\n";
+
+	// 8. P -> O and remove from Pending List
+	for (int i = 0; i < choices.size(); i++) {
+		string seatID = listSeatPending[choices[i] - 1];
+
+		auto it = _seatMap.find(seatID);
+
+		if (it != _seatMap.end()) {
+			Seat &seat = it->second;
+
+			// P -> O
+			seat.setStatus('O');
+
+			// Remove from Pending Linked List
+			deleteNode(seatID, phoneNumber);
+
+			cout << seatID << " -> Ordered\n";
+		}
+	}
+
+	float deductMoney = customerBalance - totalMoney;
+	customer->setAccountBalance(deductMoney);
+	cout << "Balance remaing : " << customer->getAccountBalance();
+}
+
+// ----------- LOAD File from txt --------------------
+unordered_map<string, Seat> &SeatManagement::getSeatMap() {
+	return _seatMap;
 }
