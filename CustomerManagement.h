@@ -1,0 +1,26 @@
+#ifndef CUSTOMERMANAGEMENT_H
+#define CUSTOMERMANAGEMENT_H
+#include "Customer.h"
+#include <unordered_map>
+
+using namespace std;
+class CustomerManagement
+{
+private:
+	unordered_map<string, Customer> _customers;
+
+public:
+	// Construct
+	CustomerManagement();
+
+	// Method
+	void createAccount(string phoneNumber, string name);
+	void displayCustomer(string phoneNumber);
+	void depositMoney(float money, Customer *customer); // Deposit monney from customer, Don't allow enter monney < 0
+	void showAccountBalance(Customer *customer);
+
+	// function helper
+	Customer *findCustomerByPhoneNumber(string phoneNumber);
+};
+
+#endif
