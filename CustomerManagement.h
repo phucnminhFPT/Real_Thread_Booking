@@ -14,12 +14,13 @@ class CustomerManagement {
 
 		// Method
 		void createAccount(string phoneNumber, string name);
-		void displayCustomer(string phoneNumber);
-		void depositMoney(float money, Customer *customer); // Deposit monney from customer, Don't allow enter monney < 0
-		void showAccountBalance(Customer *customer);
+		void displayCustomer(Customer *customer);
+		void displayAllCustomers();
+		
+		void depositMoney(float money, Customer *customer); 	// Deposit monney from customer, Don't allow enter monney < 0
 		// function helper
 		Customer *findCustomerByPhoneNumber(string phoneNumber);
-		
+
 		// File Manager
 		unordered_map<string, Customer> &getCustomers();
 

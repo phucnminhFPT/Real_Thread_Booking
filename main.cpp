@@ -14,8 +14,8 @@ enum MenuChoice {
 	PRINT_TICKET,
 
 	CREATE_ACCOUNT,
-	SHOW_ONE_CUSTOMER_INFORMATION,
-	SHOW_ACCOUNT_BALANCE,
+	SHOW_YOUR_INFORMATION,
+	SHOW_ALL_CUSTOMER_INFORMATION,
 	DEPOSIT_MONEY,
 
 	EXIT
@@ -34,8 +34,8 @@ void Menu() {
 
 	cout << "\n--------------- CUSTOMER ---------------\n";
 	cout << "6. Create account\n";
-	cout << "7. Show Customer Information\n";
-	cout << "8. Show Account Balance\n";
+	cout << "7. Show Your Information\n";
+	cout << "8. Show All Customer Information\n";
 	cout << "9. Deposit Money\n";
 
 	cout << "\n10. Exit\n";
@@ -78,10 +78,9 @@ int main() {
 		cout << "Enter your choice : ";
 		cin >> choice;
 		switch (choice) {
+			// 1. Order seat
 			case ORDER_SEAT: {
-				// 1. Order seat
 				sM.displaySeatMap();
-				// 1. Enter number phone and find number
 				string phoneNumber = enterPhoneNumber();
 				Customer *customer = cM.findCustomerByPhoneNumber(phoneNumber);
 				if (customer == nullptr) {
@@ -89,8 +88,6 @@ int main() {
 					cout << "Please create an account first.\n";
 					break;
 				}
-
-				// 2. Enter seatID
 				string seatID = enterSeatID();
 
 				sM.orderSeat(seatID, customer);
@@ -127,6 +124,19 @@ int main() {
 				sM.paymentTicketConfirm(customer);
 				break;
 			}
+			// 5 Print Ticket
+			case PRINT_TICKET: {
+				string phoneNumber = enterPhoneNumber();
+				Customer *customer = cM.findCustomerByPhoneNumber(phoneNumber);
+				if (customer == nullptr) {
+					cout << "Customer not found!\n";
+					cout << "Please create an account first.\n";
+					break;
+				}
+				sM.printTicket(customer);
+				break;
+			}
+
 			// 6. Create account
 			case CREATE_ACCOUNT: {
 				string numberPhone = enterPhoneNumber();
@@ -134,7 +144,24 @@ int main() {
 				cM.createAccount(numberPhone, name);
 				break;
 			}
+			// 7. Show your information
+			case SHOW_YOUR_INFORMATION : {
+				string phoneNumber = enterPhoneNumber();
+				Customer *customer = cM.findCustomerByPhoneNumber(phoneNumber);
+				if (customer == nullptr) {
+					cout << "Customer not found!\n";
+					cout << "Please create an account first.\n";
+					break;
 
+				}
+				cM.displayCustomer(customer);
+				break;
+			}
+			// 8. Show All Customer Information (Linked list)
+			case SHOW_ALL_CUSTOMER_INFORMATION: {
+				cM.displayAllCustomers();
+				break;
+			}
 			// 9. Deposit Money
 			case DEPOSIT_MONEY: {
 				string phoneNumber = enterPhoneNumber();
@@ -150,6 +177,7 @@ int main() {
 				cM.depositMoney(money, customer);
 				break;
 			}
+			// 10. EXIT
 			case EXIT: {
 				// Luu lai vao TXT
 				cout << "Thank you and good bye\n";

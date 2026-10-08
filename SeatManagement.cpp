@@ -389,7 +389,37 @@ void SeatManagement::paymentTicketConfirm(Customer *customer) {
 	customer->setAccountBalance(deductMoney);
 	cout << "Balance remaing : " << customer->getAccountBalance();
 }
+//------------------------ 5. Print Ticket ---------------
+void SeatManagement::printTicket(Customer *customer) {
+	string phoneNumber = customer->getPhoneNumber();
 
+	bool found = false;
+
+	cout << "\n============ TICKET ================\n";
+
+	for (auto &pair : _seatMap) {
+		Seat &seat = pair.second;
+
+		// Find all ordered seats of this customer
+		if (seat.getStatus() == 'O' && seat.getPhoneNumber() == phoneNumber) {
+			found = true;
+
+			cout << "Your Name    : " << customer->getNameCustomer() << endl;
+			cout << "Phone Number : " << phoneNumber << endl;
+			cout << "Seat ID      : " << seat.getSeatID() << endl;
+			cout << "Seat Class   : " << seat.getSeatClass() << endl;
+			cout << "Seat Price   : " << seat.getSeatPrice() << endl;
+			cout << "Status       : Ordered" << endl;
+			cout << "-----------------------------------\n";
+		}
+	}
+
+	if (!found) {
+		cout << "You don't have any seat ordered!\n";
+	}
+
+	cout << "====================================\n";
+}
 // ----------- LOAD File from txt --------------------
 unordered_map<string, Seat> &SeatManagement::getSeatMap() {
 	return _seatMap;

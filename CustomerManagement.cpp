@@ -4,7 +4,16 @@
 using namespace std;
 
 // Constructor
-CustomerManagement::CustomerManagement() {
+CustomerManagement::CustomerManagement() {}
+// Helper Function findCustomer by
+Customer* CustomerManagement::findCustomerByPhoneNumber(string phoneNumber) {
+	auto it = _customers.find(phoneNumber);
+
+	if (it != _customers.end()) {
+		return &it->second;
+	}
+
+	return nullptr;
 }
 
 // 6. Create a new customer
@@ -30,40 +39,43 @@ void CustomerManagement::createAccount(string phoneNumber, string name) {
 	cout << "Your current account : 0.0\n";
 }
 
-// Function Helper : Find customer by phone number
-Customer *CustomerManagement::findCustomerByPhoneNumber(string phoneNumber) {
-	auto it = _customers.find(phoneNumber);
-
-	// Customer not found
-	if (it == _customers.end()) {
-		return nullptr;
-	}
-
-	// Return address of Customer
-	return &(it->second);
-}
-
-// Display one customer
-void CustomerManagement::displayCustomer(string phoneNumber) {
-	Customer *customer = findCustomerByPhoneNumber(phoneNumber);
-
-	if (customer == nullptr) {
-		cout << "Customer not found!" << endl;
+// 7. Show your information
+void CustomerManagement::displayCustomer(Customer *customer) {
+	string phoneNumber = customer->getPhoneNumber();
+	if (_customers.find(phoneNumber) != _customers.end()) {
+		cout << "===== CUSTOMER INFORMATION =====" << endl;
+		cout << "Phone Number : " << customer->getPhoneNumber() << endl;
+		cout << "Name         : " << customer->getNameCustomer() << endl;
+		cout << "Balance      : " << customer->getAccountBalance() << endl;
 		return;
 	}
 
-	cout << "===== CUSTOMER INFORMATION =====" << endl;
-	cout << "Phone Number : " << customer->getPhoneNumber() << endl;
-	cout << "Name         : " << customer->getNameCustomer() << endl;
-	cout << "Balance      : " << customer->getAccountBalance() << endl;
+	return;
 }
+// -----------8. Show all customer information
+void CustomerManagement::displayAllCustomers() {
+	if (_customers.empty()) {
+		cout << "\nNo customer found!\n";
+		return;
+	}
 
-//------------- 8. Show Account Balance --------------//
+	cout << "\n========== ALL CUSTOMER INFORMATION ==========\n";
 
-void CustomerManagement::showAccountBalance(Customer *customer) {
-	float money = customer->getAccountBalance();
+	int count = 1;
 
-	cout << "Your current account : " << money;
+	for (auto &pair : _customers) {
+		Customer &customer = pair.second;
+
+		cout << "\n[" << count << "]\n";
+		cout << "Phone Number : " << customer.getPhoneNumber() << endl;
+		cout << "Name         : " << customer.getNameCustomer() << endl;
+		cout << "Balance      : " << customer.getAccountBalance() << endl;
+		cout << "---------------------------------------------\n";
+
+		count++;
+	}
+
+	cout << "==============================================\n";
 }
 
 //------------------ 9. Deposit Money -------------//
@@ -76,9 +88,10 @@ void CustomerManagement::depositMoney(float money, Customer *customer) {
 
 	float a = customer->getAccountBalance() + money;
 	customer->setAccountBalance(a);
-
-	Customer *b = customer;
-	showAccountBalance(b);
+	cout << "===== CUSTOMER INFORMATION =====" << endl;
+	cout << "Phone Number : " << customer->getPhoneNumber() << endl;
+	cout << "Name         : " << customer->getNameCustomer() << endl;
+	cout << "Balance      : " << customer->getAccountBalance() << endl;
 }
 
 
