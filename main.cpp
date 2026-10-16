@@ -77,7 +77,15 @@ int main() {
 	while (choice != EXIT) {
 		Menu(); // Print menu
 		cout << "Enter your choice : ";
-		cin >> choice;
+
+		if (!(cin >> choice)) {
+			cout << "Invalid input! Please enter a number.\n";
+
+			cin.clear();
+			cin.ignore(10000, '\n');
+
+			continue;
+		}
 		switch (choice) {
 			// 1. Order seat
 			case ORDER_SEAT: {
