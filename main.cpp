@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "SeatManagement.h"
 #include "CustomerManagement.h"
 #include "FileManager.h"

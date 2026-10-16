@@ -22,7 +22,7 @@ class CustomerManagement {
 
 		// 8. Show All Customer Information
 		void displayAllCustomers();
-		
+
 		// 9. Deposit Monney
 		void depositMoney(float money, Customer *customer); 	// Deposit monney from customer, Don't allow enter monney < 0
 		// function helper

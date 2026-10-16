@@ -1,5 +1,7 @@
 #include "CustomerManagement.h"
 #include <iostream>
+#include <cmath>
+#include <limits>
 
 using namespace std;
 
@@ -39,71 +41,20 @@ void CustomerManagement::createAccount(string phoneNumber, string name) {
 	cout << "Your current account : 0.0\n";
 }
 
-//------------------- 8.show info By Phone Number ----------------------//
-void CustomerManagement::showInfoCustomerByPhoneNumber(Customer *customer, SeatManagement &sM) {
-	if (customer == nullptr) {
-		cout << "Customer not found!\n";
+// 7. Show your information
+void CustomerManagement::displayCustomer(Customer *customer) {
+	string phoneNumber = customer->getPhoneNumber();
+	if (_customers.find(phoneNumber) != _customers.end()) {
+		cout << "===== CUSTOMER INFORMATION =====" << endl;
+		cout << "Phone Number : " << customer->getPhoneNumber() << endl;
+		cout << "Name         : " << customer->getNameCustomer() << endl;
+		cout << "Balance      : " << customer->getAccountBalance() << endl;
 		return;
 	}
 
-	// 1. Display basic customer information
-	cout << "\n========== CUSTOMER INFORMATION ==========\n";
-	cout << "Phone Number : "
-	     << customer->getPhoneNumber() << endl;
-	cout << "Name         : "
-	     << customer->getNameCustomer() << endl;
-	cout << "Balance      : "
-	     << customer->getAccountBalance() << endl;
-
-	// 2. Get all seats
-	unordered_map<string, Seat> &seats = sM.getSeatMap();
-
-	int pendingCount = 0;
-	int orderedCount = 0;
-	float totalTicketPrice = 0.0;
-
-	cout << "\n========== YOUR SEATS ==========\n";
-
-	// 3. Find seats belonging to this customer
-	for (auto &pair : seats) {
-		Seat &seat = pair.second;
-
-		if (seat.getPhoneNumber() != customer->getPhoneNumber()) {
-			continue;
+	return;
 		}
-
-		char status = seat.getStatus();
-
-		// Only display Pending and Ordered seats
-		if (status != 'P' && status != 'O') {
-			continue;
-		}
-
-		cout << "\nSeat ID    : " << seat.getSeatID() << endl;
-		cout << "Seat Class : " << seat.getSeatClass() << endl;
-		cout << "Seat Price : " << seat.getSeatPrice() << endl;
-
-		if (status == 'P') {
-			cout << "Status     : Pending (Unpaid)\n";
-			pendingCount++;
-		} else if (status == 'O') {
-			cout << "Status     : Ordered (Paid)\n";
-			orderedCount++;
-			totalTicketPrice += seat.getSeatPrice();
-		}
-
-		cout << "---------------------------------\n";
-	}
-
-	// 4. Display ticket summary
-	cout << "\n========== TICKET SUMMARY ==========\n";
-	cout << "Pending seats       : " << pendingCount << endl;
-	cout << "Purchased seats     : " << orderedCount << endl;
-	cout << "Total purchased cost: " << totalTicketPrice << endl;
-	cout << "===================================\n";
-}
-
-// ------------------9. Show all customer information---------------//
+// -----------8. Show all customer information
 void CustomerManagement::displayAllCustomers() {
 	if (_customers.empty()) {
 		cout << "\nNo customer existing!\n";
@@ -130,10 +81,37 @@ void CustomerManagement::displayAllCustomers() {
 }
 
 //------------------ 9. Deposit Money -------------//
-
 void CustomerManagement::depositMoney(float money, Customer *customer) {
-	if (money < 0) {
-		cout << "Can't deposit negative monney\n";
+	if (customer == nullptr) {
+		cout << "Customer not found!\n";
+		return;
+	}
+
+	if (!isfinite(money) || money <= 0) {
+		cout << "Deposit amount must be greater than 0!\n";
+		return;
+	}
+
+	float currentBalance = customer->getAccountBalance();
+
+	// Prevent invalid balance and overflow
+	if (!isfinite(currentBalance) ||
+	        money > numeric_limits<float>::max() - currentBalance) {
+		cout << "Invalid amount or balance overflow!\n";
+		return;
+	}
+
+	if (!isfinite(money) || money <= 0) {
+		cout << "Deposit amount must be greater than 0!\n";
+		return;
+	}
+
+	float currentBalance = customer->getAccountBalance();
+
+	// Prevent invalid balance and overflow
+	if (!isfinite(currentBalance) ||
+	        money > numeric_limits<float>::max() - currentBalance) {
+		cout << "Invalid amount or balance overflow!\n";
 		return;
 	}
 

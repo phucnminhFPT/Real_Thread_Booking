@@ -1,6 +1,7 @@
 [CUSTOMERS]
-0898|leon|0
 0901234567|Nguyen Minh|500
+0898|leon|0
+001|test|2211
 0912345678|John|300
 
 [SEATS]
@@ -10,8 +11,8 @@ E3|Couple|A|250|
 E2|Couple|A|250|
 E1|Couple|P|250|
 B4|Normal|A|100|
-D1|VIP|A|200|
-B2|Normal|A|100|
+D1|VIP|P|200|001
+B2|Normal|O|100|001
 B5|Normal|A|100|0912345678
 A2|Normal|A|100|
 A1|Normal|P|100|0898

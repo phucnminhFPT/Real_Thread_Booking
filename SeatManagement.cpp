@@ -70,13 +70,13 @@ void SeatManagement::displaySeatMap() {
 void SeatManagement::orderSeats(vector<string> seatIDs, Customer *customer) {
     if (customer == nullptr) {
         cout << "Customer not found!\n";
-		return;
-	}
+        return;
+    }
 
     if (seatIDs.empty()) {
         cout << "No seats selected!\n";
-		return;
-	}
+        return;
+    }
 
     vector<string> orderedSeats;
 
@@ -112,14 +112,46 @@ void SeatManagement::orderSeats(vector<string> seatIDs, Customer *customer) {
         if (seat.getStatus() != 'A') {
             cout << seatID << " is PENDING or ORDERED!\n";
             continue;
-	}
+        }
 
         // Add seat to Pending Linked List
-	addToPendingList(seatID, customer);
+        addToPendingList(seatID, customer);
 
         // Update seat information
-	seat.setPhoneNumber(customer->getPhoneNumber());
-	seat.setStatus('P');
+        seat.setPhoneNumber(customer->getPhoneNumber());
+        seat.setStatus('P');
+
+        orderedSeats.push_back(seatID);
+
+        cout << seatID << " ordered successfully!\n";
+    }
+
+    cout << "\n========== ORDER SUMMARY ==========\n";
+    cout << "Customer Name : "
+         << customer->getNameCustomer() << endl;
+    cout << "Phone Number  : "
+         << customer->getPhoneNumber() << endl;
+
+    if (orderedSeats.empty()) {
+        cout << "No seats were ordered successfully.\n";
+    } else {
+        cout << "Number of seats ordered: "
+             << orderedSeats.size() << endl;
+
+        cout << "Seats: ";
+
+        for (int i = 0; i < orderedSeats.size(); i++) {
+            cout << orderedSeats[i];
+
+            if (i < orderedSeats.size() - 1) {
+                cout << ", ";
+            }
+        }
+
+        cout << "\n";
+    }
+
+    cout << "===================================\n";
 }
 //------------- Delete Node ------------------//
 
@@ -378,7 +410,7 @@ void SeatManagement::paymentTicketConfirm(Customer *customer) {
 
 	cout << "\nTotal payment: " << totalMoney << endl;
 
-	// 6.
+	// 6. Print customerBalance
 	float customerBalance = customer->getAccountBalance();
 
 	if (customerBalance < totalMoney) {
