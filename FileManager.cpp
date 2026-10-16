@@ -123,8 +123,7 @@ void FileManager::load(CustomerManagement &customerManagement,
 	cout << "Data loaded successfully!\n";
 }
 
-void FileManager::save(CustomerManagement &customerManagement,
-                       SeatManagement &seatManagement) {
+void FileManager::save(CustomerManagement &customerManagement, SeatManagement &seatManagement) {
 	ofstream file(_fileName);
 
 	if (!file.is_open()) {

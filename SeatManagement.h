@@ -11,16 +11,14 @@ private:
 	unordered_map<string, Seat> _seatMap;
 
 	// Single linked list
-	struct Node
-	{
+		struct Node {
 		Customer customer;
 		string seatID;
 
 		Node *next;
 
 		// Auto fill infor when it is called
-		Node(Customer customer, string seatID)
-		{
+			Node(Customer customer, string seatID) {
 			this->customer = customer;
 			this->seatID = seatID;
 			this->next = nullptr;
@@ -40,8 +38,9 @@ public:
 	// Display seat map
 	void displaySeatMap();
 
-	// 1. Order seat
-	void orderSeat(string seatID, Customer *customer);
+		// 1. Order seats
+		// Order multiple seats for one customer
+		void orderSeats(vector<string> seatIDs, Customer *customer);
 	// 2. Cancel seat
 	void cancelSeat(Customer *customer);
 	// 3. Display waiting payment list

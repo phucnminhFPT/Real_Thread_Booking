@@ -39,7 +39,7 @@ void SeatManagement::initSeatsMap_HashMap() {
 }
 
 void SeatManagement::displaySeatMap() {
-	cout << "\n------------SEAT MAP----------- \n\n";
+	cout << "\n	 -----------SEAT MAP----------- 		\n\n";
 
 	for (char row = 'A'; row <= 'E'; row++) {
 		cout << "  ";
@@ -67,35 +67,57 @@ void SeatManagement::displaySeatMap() {
 }
 
 // -----------------1. Order seat-------------------
-void SeatManagement::orderSeat(string seatID, Customer *customer) {
-	// Find seat
-	auto it = _seatMap.find(seatID);
-
-	// 1. Seat does not exist
-	if (it == _seatMap.end()) {
-		cout << seatID << " not existing !";
+void SeatManagement::orderSeats(vector<string> seatIDs, Customer *customer) {
+    if (customer == nullptr) {
+        cout << "Customer not found!\n";
 		return;
 	}
 
-	Seat &seat = it->second; // Get value
-	// 2.1 If P : Pending
-	if (seat.getStatus() == 'P') {
-		cout << "This seat is PENDING !";
+    if (seatIDs.empty()) {
+        cout << "No seats selected!\n";
 		return;
 	}
 
-	// 2.2 If O : Ordered
-	if (seat.getStatus() == 'O') {
-		cout << "This seat was ORDERED !";
-		return;
+    vector<string> orderedSeats;
+
+    for (int i = 0; i < seatIDs.size(); i++) {
+        string seatID = seatIDs[i];
+
+        // Check duplicate seat IDs in this request
+        bool duplicate = false;
+
+        for (int j = 0; j < orderedSeats.size(); j++) {
+            if (orderedSeats[j] == seatID) {
+                duplicate = true;
+                break;
+            }
+        }
+
+        if (duplicate) {
+            cout << seatID << " was entered more than once!\n";
+            continue;
+        }
+
+        // Find seat in Hash Map
+        auto it = _seatMap.find(seatID);
+
+        if (it == _seatMap.end()) {
+            cout << seatID << " does not exist!\n";
+            continue;
+        }
+
+        Seat &seat = it->second;
+
+        // Check seat status
+        if (seat.getStatus() != 'A') {
+            cout << seatID << " is PENDING or ORDERED!\n";
+            continue;
 	}
 
-	// 3. Add customer to pending payment list
+        // Add seat to Pending Linked List
 	addToPendingList(seatID, customer);
 
-	cout << seatID << " ordered success ! Added to Pending List";
-
-	// 4. Change status, add numberPhone
+        // Update seat information
 	seat.setPhoneNumber(customer->getPhoneNumber());
 	seat.setStatus('P');
 }

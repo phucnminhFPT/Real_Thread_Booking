@@ -14,7 +14,7 @@ enum MenuChoice {
 	PRINT_TICKET,
 
 	CREATE_ACCOUNT,
-	SHOW_YOUR_INFORMATION,
+	SEARCH_CUSTOMER_BY_PHONE_NUMBER,
 	SHOW_ALL_CUSTOMER_INFORMATION,
 	DEPOSIT_MONEY,
 
@@ -34,7 +34,7 @@ void Menu() {
 
 	cout << "\n--------------- CUSTOMER ---------------\n";
 	cout << "6. Create account\n";
-	cout << "7. Show Your Information\n";
+	cout << "7. Search Customer By Phone Number\n";
 	cout << "8. Show All Customer Information\n";
 	cout << "9. Deposit Money\n";
 
@@ -81,16 +81,32 @@ int main() {
 			// 1. Order seat
 			case ORDER_SEAT: {
 				sM.displaySeatMap();
+
 				string phoneNumber = enterPhoneNumber();
+
 				Customer *customer = cM.findCustomerByPhoneNumber(phoneNumber);
+
 				if (customer == nullptr) {
 					cout << "Customer not found!\n";
 					cout << "Please create an account first.\n";
 					break;
 				}
-				string seatID = enterSeatID();
 
-				sM.orderSeat(seatID, customer);
+				vector<string> seatIDs;
+				string seatID;
+
+				cout << "\nEnter seat IDs to order (example: A1 A2 C3).\n";
+				cout << "Enter 0 to finish: ";
+
+				while (cin >> seatID) {
+					if (seatID == "0") {
+						break;
+					}
+
+					seatIDs.push_back(seatID);
+				}
+
+				sM.orderSeats(seatIDs, customer);
 
 				break;
 			}
@@ -144,20 +160,21 @@ int main() {
 				cM.createAccount(numberPhone, name);
 				break;
 			}
-			// 7. Show your information
-			case SHOW_YOUR_INFORMATION : {
+			// 7. Search Customer By Phone Number
+			case SEARCH_CUSTOMER_BY_PHONE_NUMBER : {
 				string phoneNumber = enterPhoneNumber();
+
 				Customer *customer = cM.findCustomerByPhoneNumber(phoneNumber);
+
 				if (customer == nullptr) {
 					cout << "Customer not found!\n";
-					cout << "Please create an account first.\n";
 					break;
-
 				}
-				cM.displayCustomer(customer);
+
+				cM.showInfoCustomerByPhoneNumber(customer, sM);
 				break;
 			}
-			// 8. Show All Customer Information (Linked list)
+			// 8. Show All Customer Information
 			case SHOW_ALL_CUSTOMER_INFORMATION: {
 				cM.displayAllCustomers();
 				break;

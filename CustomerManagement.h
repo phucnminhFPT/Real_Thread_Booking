@@ -1,6 +1,7 @@
 #ifndef CUSTOMERMANAGEMENT_H
 #define CUSTOMERMANAGEMENT_H
 #include "Customer.h"
+#include "SeatManagement.h"
 #include <unordered_map>
 
 using namespace std;
@@ -13,10 +14,16 @@ class CustomerManagement {
 		CustomerManagement();
 
 		// Method
+		//6. Create account
 		void createAccount(string phoneNumber, string name);
-		void displayCustomer(Customer *customer);
+
+		// 7. Search Customer by Phone Number
+		void showInfoCustomerByPhoneNumber(Customer *customer, SeatManagement &sM);
+
+		// 8. Show All Customer Information
 		void displayAllCustomers();
 		
+		// 9. Deposit Monney
 		void depositMoney(float money, Customer *customer); 	// Deposit monney from customer, Don't allow enter monney < 0
 		// function helper
 		Customer *findCustomerByPhoneNumber(string phoneNumber);

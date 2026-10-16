@@ -6,7 +6,7 @@ using namespace std;
 // Constructor
 CustomerManagement::CustomerManagement() {}
 // Helper Function findCustomer by
-Customer* CustomerManagement::findCustomerByPhoneNumber(string phoneNumber) {
+Customer *CustomerManagement::findCustomerByPhoneNumber(string phoneNumber) {
 	auto it = _customers.find(phoneNumber);
 
 	if (it != _customers.end()) {
@@ -16,7 +16,7 @@ Customer* CustomerManagement::findCustomerByPhoneNumber(string phoneNumber) {
 	return nullptr;
 }
 
-// 6. Create a new customer
+//------------------- 6. Create a new customer-----------------------//
 void CustomerManagement::createAccount(string phoneNumber, string name) {
 	// Check if phone number already exists
 	if (_customers.find(phoneNumber) != _customers.end()) {
@@ -39,23 +39,74 @@ void CustomerManagement::createAccount(string phoneNumber, string name) {
 	cout << "Your current account : 0.0\n";
 }
 
-// 7. Show your information
-void CustomerManagement::displayCustomer(Customer *customer) {
-	string phoneNumber = customer->getPhoneNumber();
-	if (_customers.find(phoneNumber) != _customers.end()) {
-		cout << "===== CUSTOMER INFORMATION =====" << endl;
-		cout << "Phone Number : " << customer->getPhoneNumber() << endl;
-		cout << "Name         : " << customer->getNameCustomer() << endl;
-		cout << "Balance      : " << customer->getAccountBalance() << endl;
+//------------------- 8.show info By Phone Number ----------------------//
+void CustomerManagement::showInfoCustomerByPhoneNumber(Customer *customer, SeatManagement &sM) {
+	if (customer == nullptr) {
+		cout << "Customer not found!\n";
 		return;
 	}
 
-	return;
+	// 1. Display basic customer information
+	cout << "\n========== CUSTOMER INFORMATION ==========\n";
+	cout << "Phone Number : "
+	     << customer->getPhoneNumber() << endl;
+	cout << "Name         : "
+	     << customer->getNameCustomer() << endl;
+	cout << "Balance      : "
+	     << customer->getAccountBalance() << endl;
+
+	// 2. Get all seats
+	unordered_map<string, Seat> &seats = sM.getSeatMap();
+
+	int pendingCount = 0;
+	int orderedCount = 0;
+	float totalTicketPrice = 0.0;
+
+	cout << "\n========== YOUR SEATS ==========\n";
+
+	// 3. Find seats belonging to this customer
+	for (auto &pair : seats) {
+		Seat &seat = pair.second;
+
+		if (seat.getPhoneNumber() != customer->getPhoneNumber()) {
+			continue;
+		}
+
+		char status = seat.getStatus();
+
+		// Only display Pending and Ordered seats
+		if (status != 'P' && status != 'O') {
+			continue;
+		}
+
+		cout << "\nSeat ID    : " << seat.getSeatID() << endl;
+		cout << "Seat Class : " << seat.getSeatClass() << endl;
+		cout << "Seat Price : " << seat.getSeatPrice() << endl;
+
+		if (status == 'P') {
+			cout << "Status     : Pending (Unpaid)\n";
+			pendingCount++;
+		} else if (status == 'O') {
+			cout << "Status     : Ordered (Paid)\n";
+			orderedCount++;
+			totalTicketPrice += seat.getSeatPrice();
+		}
+
+		cout << "---------------------------------\n";
+	}
+
+	// 4. Display ticket summary
+	cout << "\n========== TICKET SUMMARY ==========\n";
+	cout << "Pending seats       : " << pendingCount << endl;
+	cout << "Purchased seats     : " << orderedCount << endl;
+	cout << "Total purchased cost: " << totalTicketPrice << endl;
+	cout << "===================================\n";
 }
-// -----------8. Show all customer information
+
+// ------------------9. Show all customer information---------------//
 void CustomerManagement::displayAllCustomers() {
 	if (_customers.empty()) {
-		cout << "\nNo customer found!\n";
+		cout << "\nNo customer existing!\n";
 		return;
 	}
 
@@ -94,7 +145,6 @@ void CustomerManagement::depositMoney(float money, Customer *customer) {
 	cout << "Balance      : " << customer->getAccountBalance() << endl;
 }
 
-
 // -------------------------- Load file --------------------
 // Get all customers
 unordered_map<string, Customer> &CustomerManagement::getCustomers() {
@@ -103,7 +153,7 @@ unordered_map<string, Customer> &CustomerManagement::getCustomers() {
 
 // Load customer from file
 // This function does NOT display any message
-void CustomerManagement::loadCustomer( string phoneNumber, string name, float balance) {
+void CustomerManagement::loadCustomer(string phoneNumber, string name, float balance) {
 	Customer customer;
 
 	customer.setPhoneNumber(phoneNumber);
