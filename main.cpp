@@ -35,7 +35,7 @@ void Menu() {
 
 	cout << "\n--------------- CUSTOMER ---------------\n";
 	cout << "6. Create account\n";
-	cout << "7. Search Customer By Phone Number\n";
+	cout << "7. Show Info Customer By Phone Number\n";
 	cout << "8. Show All Customer Information\n";
 	cout << "9. Deposit Money\n";
 
